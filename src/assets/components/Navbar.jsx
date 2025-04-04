@@ -20,9 +20,9 @@ const Navbar = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/bus-booking" className="px-3 py-2 text-sm font-medium text-dark hover:text-primary transition-colors duration-200">Bus Tickets</Link>
-            <Link to="/parcel-service" className="px-3 py-2 text-sm font-medium text-dark hover:text-primary transition-colors duration-200">Parcel Service</Link>
-            <Link to="/tracking" className="px-3 py-2 text-sm font-medium text-dark hover:text-primary transition-colors duration-200">Track</Link>
+          <Link to="/bus-booking" className="px-3 py-2 text-sm font-medium text-dark hover:text-primary transition-colors duration-200">Bus Tickets</Link>
+          <Link to="/parcel-service" className="px-3 py-2 text-sm font-medium text-dark hover:text-primary transition-colors duration-200">Parcel Service</Link>
+            <Link to="/print-ticket" className="px-3 py-2 text-sm font-medium text-dark hover:text-primary transition-colors duration-200">Print Ticket</Link>
             <Link to="/login" className="px-4 py-2 text-sm font-medium text-dark bg-primary rounded-md hover:bg-secondary transition-colors duration-200">Login</Link>
           </div>
           

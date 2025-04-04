@@ -4,6 +4,7 @@ import './App.css';
 import Navbar from './assets/components/Navbar';
 import Home from './assets/components/Home';
 import Footer from './assets/components/Footer';
+import BusBookingForm from './assets/components/BusBookingForm.'; // Import BusBookingForm
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/bus-booking" element={<BusBookingForm />} /> {/* Add the route for BusBookingForm */}
       </Routes>
       <footer>
         <Footer />
