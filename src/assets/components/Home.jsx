@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const HomePage = () => {
+const Home = () => {
   const features = [
     {
       title: "Online Bus Booking",
@@ -174,4 +174,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;

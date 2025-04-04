@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './assets/components/Navbar';
-import HomePage from './assets/components/Homepage';  // Make sure the file is named "Homepage.jsx"
+import Home from './assets/components/Home';
 import Footer from './assets/components/Footer';
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<Home />} />
       </Routes>
       <footer>
         <Footer />
