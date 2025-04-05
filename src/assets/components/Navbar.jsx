@@ -72,7 +72,7 @@ const Navbar = () => {
             Parcel Service
           </Link>
           <Link 
-            to="/tracking" 
+            to="/print-ticket" 
             className="block px-3 py-2 rounded-md text-base font-medium text-dark hover:bg-primary hover:text-dark"
             onClick={() => setIsMenuOpen(false)}
           >

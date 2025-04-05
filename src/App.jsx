@@ -4,7 +4,8 @@ import './App.css';
 import Navbar from './assets/components/Navbar';
 import Home from './assets/components/Home';
 import Footer from './assets/components/Footer';
-import BusBookingForm from './assets/components/BusBookingForm.'; // Import BusBookingForm
+import BusBookingForm from './assets/components/BusBookingForm';
+import ParcelDeliveryForm from './assets/components/ParcelDeliveryForm'; // ✅ Add this line
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/bus-booking" element={<BusBookingForm />} /> {/* Add the route for BusBookingForm */}
+        <Route path="/bus-booking" element={<BusBookingForm />} />
+        <Route path="/parcel-service" element={<ParcelDeliveryForm />} /> {/* ✅ Add this route */}
       </Routes>
       <footer>
         <Footer />
