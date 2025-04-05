@@ -23,6 +23,9 @@ const BusBookingForm = () => {
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [bookingComplete, setBookingComplete] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
 
   // Filtered buses based on selection
   const availableBuses = busData.filter(
@@ -37,6 +40,8 @@ const BusBookingForm = () => {
       setSelectedBus(null);
       setSelectedSeats([]);
       setBookingComplete(false);
+      setShowPayment(false);
+      setPaymentConfirmed(false);
     }
   };
 
@@ -60,6 +65,25 @@ const BusBookingForm = () => {
     if (selectedSeats.length > 0) {
       setBookingComplete(true);
     }
+  };
+
+  // Handle payment
+  const handlePayment = () => {
+    setPaymentConfirmed(true);
+  };
+
+  // Reset form
+  const resetForm = () => {
+    setFrom('');
+    setTo('');
+    setDate('');
+    setFormSubmitted(false);
+    setSelectedBus(null);
+    setSelectedSeats([]);
+    setBookingComplete(false);
+    setShowPayment(false);
+    setPaymentMethod('');
+    setPaymentConfirmed(false);
   };
 
   // Calculate total price
@@ -235,40 +259,74 @@ const BusBookingForm = () => {
             )}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-6 text-center" style={{ backgroundColor: '#fffde7' }}>
-            <div className="p-8">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold mb-4">Booking Successful!</h2>
-              <p className="mb-6">Your booking for <span className="font-medium">{selectedBus.name}</span> on <span className="font-medium">{new Date(date).toDateString()}</span> is confirmed.</p>
-              <div className="bg-gray-100 p-4 rounded-lg max-w-md mx-auto text-left">
-                <p className="font-bold mb-2">Booking Details:</p>
-                <p>Journey: {selectedBus.from} to {selectedBus.to}</p>
-                <p>Date: {new Date(date).toDateString()}</p>
-                <p>Bus: {selectedBus.name} ({selectedBus.time})</p>
-                <p>Seats: {selectedSeats.sort((a, b) => a - b).join(', ')}</p>
-                <p>Total Amount: KSh {totalPrice}</p>
-              </div>
-              <button 
-                className="mt-6 px-6 py-3 bg-yellow-400 text-gray-800 font-bold rounded hover:bg-yellow-500 transition duration-300"
-                style={{ backgroundColor: '#ffd700' }}
-                onClick={() => {
-                  setFormSubmitted(false);
-                  setSelectedBus(null);
-                  setSelectedSeats([]);
-                  setBookingComplete(false);
-                  setFrom('');
-                  setTo('');
-                  setDate('');
-                }}
+          // Booking Complete Section
+          !showPayment ? (
+            <div className="text-center space-y-4 bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-semibold text-green-600">✅ Trip Details Confirmed</h3>
+              <p>Route: {selectedBus.from} to {selectedBus.to}</p>
+              <p>Bus: {selectedBus.name} ({selectedBus.time})</p>
+              <p>Seats: {selectedSeats.sort((a, b) => a - b).join(', ')}</p>
+              <p className="text-lg font-medium">Total Cost: KSh {totalPrice}</p>
+          
+              <button
+                onClick={() => setShowPayment(true)}
+                className="w-full bg-[#ffd700] text-black py-2 rounded-lg font-semibold hover:bg-[#ffeb3b]"
               >
-                Book Another Trip
+                Proceed to Payment
+              </button>
+          
+              <button
+                onClick={resetForm}
+                className="w-full mt-2 bg-gray-200 text-gray-800 py-2 rounded-md"
+              >
+                Cancel
               </button>
             </div>
-          </div>
+          ) : !paymentConfirmed ? (
+            <div className="space-y-4 bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-semibold text-center text-[#ffd700]">💳 Choose Payment Method</h3>
+          
+              <select
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option value="">Select Payment Method</option>
+                <option value="mpesa">M-Pesa</option>
+                <option value="card">Card</option>
+              </select>
+          
+              {paymentMethod && (
+                <div>
+                  <label className="block text-sm text-gray-700 mb-1">
+                    {paymentMethod === 'mpesa' ? 'Enter M-Pesa Number' : 'Enter Card Number'}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={paymentMethod === 'mpesa' ? '07XXXXXXXX' : '1234 5678 9012 3456'}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                  <button
+                    onClick={handlePayment}
+                    className="mt-4 w-full bg-[#ffd700] text-black py-2 rounded-lg font-semibold hover:bg-[#ffeb3b]"
+                  >
+                    Pay Now
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-center space-y-3 bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-2xl text-green-600 font-bold">🎉 Payment Successful!</h3>
+              <p className="text-gray-700">Thank you for booking. Enjoy your trip!</p>
+              <button
+                onClick={resetForm}
+                className="w-full bg-[#ffd700] text-black py-2 rounded-lg font-semibold hover:bg-[#ffeb3b] mt-4"
+              >
+                New Booking
+              </button>
+            </div>
+          )
         )}
       </div>
     </div>
