@@ -49,7 +49,7 @@ const ParcelDeliveryForm = () => {
     if (paymentMethod) {
       setTimeout(() => {
         setPaymentConfirmed(true);
-      }, 1500); // simulate delay
+      }, 1500);
     } else {
       alert('Please select a payment method');
     }
@@ -72,7 +72,10 @@ const ParcelDeliveryForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-white p-4 sm:p-8 flex items-center justify-center">
+    <div
+      className="min-h-screen bg-gradient-to-br from-gray-100  p-4 sm:p-8 flex items-center justify-center"
+      style={{ backgroundColor: '#FFFFC5' }}
+    >
       <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-8">
         <h2 className="text-3xl font-bold text-center text-[#ffd700] mb-6">
           🚚 Parcel Delivery Form

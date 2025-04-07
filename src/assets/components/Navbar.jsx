@@ -76,7 +76,7 @@ const Navbar = () => {
             className="block px-3 py-2 rounded-md text-base font-medium text-dark hover:bg-primary hover:text-dark"
             onClick={() => setIsMenuOpen(false)}
           >
-            Track
+            Print Ticket
           </Link>
           <Link 
             to="/login" 

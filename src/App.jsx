@@ -5,7 +5,8 @@ import Navbar from './assets/components/Navbar';
 import Home from './assets/components/Home';
 import Footer from './assets/components/Footer';
 import BusBookingForm from './assets/components/BusBookingForm';
-import ParcelDeliveryForm from './assets/components/ParcelDeliveryForm'; // ✅ Add this line
+import ParcelDeliveryForm from './assets/components/ParcelDeliveryForm';
+import BusTicketSystem from './assets/components/BusTicketSystem'; // ✅ Import the ticket component
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/bus-booking" element={<BusBookingForm />} />
-        <Route path="/parcel-service" element={<ParcelDeliveryForm />} /> {/* ✅ Add this route */}
+        <Route path="/parcel-service" element={<ParcelDeliveryForm />} />
+        <Route path="/print-ticket" element={<BusTicketSystem />} /> {/* ✅ Ticket route */}
       </Routes>
       <footer>
         <Footer />

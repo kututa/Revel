@@ -93,8 +93,8 @@ const BusBookingForm = () => {
   const today = new Date().toISOString().split('T')[0];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-4xl mx-auto">
+<div className="min-h-screen bg-gray-50 p-4" style={{ backgroundColor: '#FFFFC5' }}>
+<div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Revel Coach Booking</h1>
         
         {!bookingComplete ? (
