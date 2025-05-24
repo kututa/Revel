@@ -49,6 +49,6 @@ After the backend server is running, you must visit the following URL in your br
 
 Open a new terminal window (keep the backend server running in the first one), navigate back to the root directory of your project, and start the frontend:
 
-   npm run dev
+    npm run dev
 
 Your frontend application should now be accessible in your web browser, typically at http://localhost:5173 (or similar, depending on your frontend framework's default development port).
