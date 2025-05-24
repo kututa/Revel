@@ -16,11 +16,11 @@ Follow these steps to set up and get the project running on your local machine.
 
 Create a file named .env in the root directory of your project (where package.json is located). Add your database credentials to this file:
 
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_database_password
-DB_DATABASE=bus_booking # Don't forget your database name!
-PORT=3000 # Or your desired backend port
+    DB_HOST=localhost
+    DB_USER=root
+    DB_PASSWORD=your_database_password
+    DB_DATABASE=bus_booking # Don't forget your database name!
+    PORT=3000 # Or your desired backend port
 
 Important: Never commit your .env file to version control. It contains sensitive information. We recommend adding .env to your .gitignore file.
 2. Install Dependencies
