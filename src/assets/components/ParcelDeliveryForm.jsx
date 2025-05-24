@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 
-const ParcelDeliveryForm = () => {
+const ParcelDeliveryForm = ({cities}) => {
   const [formData, setFormData] = useState({
     pickupLocation: '',
     deliveryLocation: '',
@@ -15,25 +15,16 @@ const ParcelDeliveryForm = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
-
-  const locations = ['Nairobi', 'Mombasa', 'Kisumu', 'Eldoret', 'Nakuru'];
-  const sizes = ['Small (up to 1 kg)', 'Medium (1-3 kg)', 'Large (3-5 kg)'];
+  const [sizes,setSize] = useState()
+  
+  const locations = cities?.map((city)=>city.name)
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const calculateCost = () => {
-    const sizeFactors = { 'Small (up to 1 kg)': 200, 'Medium (1-3 kg)': 350, 'Large (3-5 kg)': 500 };
-    const distanceFactor = Math.abs(
-      locations.indexOf(formData.pickupLocation) -
-      locations.indexOf(formData.deliveryLocation)
-    ) || 1;
-
-    const baseCost = sizeFactors[formData.parcelSize] || 200;
-    const totalCost = baseCost * distanceFactor;
-    setEstimatedCost(totalCost);
-  };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -71,6 +62,39 @@ const ParcelDeliveryForm = () => {
     setPaymentConfirmed(false);
   };
 
+  useEffect(()=>{
+    const getSizes = async ()=>{
+       try {
+    
+const response = await fetch('http://localhost:5000/api/parcel/sizes')
+if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json()
+        
+        setSize(result)
+
+  } catch (error) {
+    console.log(error)
+    
+  }
+    }
+    getSizes()
+  },[])
+  const calculateCost = () => {
+    const sizeFactors = sizes?.reduce((accumulator,current)=>{
+      accumulator[current.description] = parseFloat(current.base_price)
+      return accumulator
+},{})
+    const distanceFactor = Math.abs(
+      locations.indexOf(formData.pickupLocation) -
+      locations.indexOf(formData.deliveryLocation)
+    ) || 1;
+
+    const baseCost = sizeFactors[formData.parcelSize] || 200;
+    const totalCost = baseCost * distanceFactor;
+    setEstimatedCost(totalCost);
+  };
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-gray-100  p-4 sm:p-8 flex items-center justify-center"
@@ -83,9 +107,9 @@ const ParcelDeliveryForm = () => {
 
         {!isSubmitted ? (
           <form onSubmit={handleSubmit} className="space-y-5">
-            {[{ name: 'pickupLocation', label: 'Pickup Location', options: locations },
+            {[{ name: 'pickupLocation', label: 'Pickup Location', options: locations  },
               { name: 'deliveryLocation', label: 'Delivery Location', options: locations },
-              { name: 'parcelSize', label: 'Parcel Size', options: sizes }
+              { name: 'parcelSize', label: 'Parcel Size', options: sizes?.map((size)=>size.description) }
             ].map(({ name, label, options }) => (
               <div key={name}>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
@@ -96,7 +120,7 @@ const ParcelDeliveryForm = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffd700]"
                 >
                   <option value="">Select {label.toLowerCase()}</option>
-                  {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                  {options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
             ))}
