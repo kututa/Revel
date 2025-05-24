@@ -27,7 +27,7 @@ Important: Never commit your .env file to version control. It contains sensitive
 
 Open your terminal in the root directory of the project and run the following command to install dependencies for both the frontend and backend:
 
-npm run setup
+    npm run setup
 
 This command first installs root-level dependencies (if any).
 ▶️ Running the Application
@@ -35,20 +35,20 @@ This command first installs root-level dependencies (if any).
 
 Navigate into the server directory and start the backend:
 
-cd server
-npm run server
+    cd server
+    npm run server
 
 The server should start on the port specified in your .env file (e.g., http://localhost:3000).
 2. Run One-Time Backend Initialization
 
 After the backend server is running, you must visit the following URL in your browser (or use Postman) to explicitly trigger database initialization and seeding:
 
-http://localhost:3000/api/init
+   http://localhost:3000/api/init
 
 3. Start the Frontend App
 
 Open a new terminal window (keep the backend server running in the first one), navigate back to the root directory of your project, and start the frontend:
 
-npm run dev
+   npm run dev
 
 Your frontend application should now be accessible in your web browser, typically at http://localhost:5173 (or similar, depending on your frontend framework's default development port).
