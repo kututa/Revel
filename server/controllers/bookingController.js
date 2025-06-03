@@ -110,6 +110,7 @@ bookingRoutes.post('/bookings', async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
+         await conn.query('USE bus_booking;');
         await conn.beginTransaction();
 
         // 1. Get bus price

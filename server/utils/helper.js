@@ -11,11 +11,14 @@ initRoutes.post('/init', async (req, res) => {
     }
 
     try {
-        // await executeQuery('DELETE FROM booking_seats');
-        // await executeQuery('DELETE FROM bookings');
-        // await executeQuery('DELETE FROM seats');
-        // await executeQuery('DELETE FROM buses');
-      //  await executeQuery('DELETE FROM cities');
+        
+        await executeQuery('DELETE FROM booking_seats');
+        await executeQuery('DELETE FROM bookings');
+        await executeQuery('DELETE FROM seats');
+        await executeQuery('DELETE FROM buses');
+       await executeQuery('DELETE FROM cities');
+
+     
 
         // Insert cities
         const cities = ['Nairobi','Mombasa','Kisumu','Nakuru', 'Eldoret', 'Thika', 'Meru'];
@@ -85,6 +88,7 @@ async function executeQuery(query, params = []) {
     let conn;
     try {
         conn = await pool.getConnection();
+         await conn.query('USE bus_booking;');
         const result = await conn.query(query, params);
         return result;
     } catch (err) {

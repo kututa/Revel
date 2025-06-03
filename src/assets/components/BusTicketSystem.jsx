@@ -19,6 +19,7 @@ export default function BusTicketSystem() {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
+        
       });
 
       setTicketData({

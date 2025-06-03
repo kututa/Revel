@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS bus_booking;
 
 USE bus_booking;
+
 -- Cities table
 CREATE TABLE IF NOT EXISTS cities (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -9,8 +10,8 @@ CREATE TABLE IF NOT EXISTS cities (
 
 -- Buses table
 CREATE TABLE IF NOT EXISTS buses (
-    plate_number VARCHAR(20) PRIMARY KEY,
-    id INT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plate_number VARCHAR(20) NOT NULL UNIQUE,
     model VARCHAR(100) NOT NULL,
     from_city_id INT NOT NULL,
     to_city_id INT NOT NULL,
@@ -30,6 +31,17 @@ CREATE TABLE IF NOT EXISTS seats (
     is_available BOOLEAN DEFAULT TRUE,
     UNIQUE KEY (bus_id, seat_number),
     FOREIGN KEY (bus_id) REFERENCES buses(id)
+);
+
+-- M-Pesa Transactions table (updated with JSON instead of JSONB)
+CREATE TABLE IF NOT EXISTS mpesa_transactions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  checkout_request_id VARCHAR(255),
+  result_code INT,
+  callback_metadata JSON,
+  result_desc TEXT,
+  raw_data JSON NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Bookings table
@@ -52,6 +64,7 @@ CREATE TABLE IF NOT EXISTS booking_seats (
     PRIMARY KEY (booking_id, seat_number),
     FOREIGN KEY (booking_id) REFERENCES bookings(id)
 );
+
 -- Tickets table
 CREATE TABLE IF NOT EXISTS tickets (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -72,8 +85,7 @@ CREATE TABLE IF NOT EXISTS tickets (
     FOREIGN KEY (destination_city_id) REFERENCES cities(id)
 );
 
-
--- Parcel sizes table (added to existing schema)
+-- Parcel sizes table
 CREATE TABLE IF NOT EXISTS parcel_sizes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
@@ -81,7 +93,7 @@ CREATE TABLE IF NOT EXISTS parcel_sizes (
     base_price DECIMAL(10, 2) NOT NULL
 );
 
--- Parcel deliveries table (added to existing schema)
+-- Parcel deliveries table
 CREATE TABLE IF NOT EXISTS parcel_deliveries (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tracking_number VARCHAR(20) NOT NULL UNIQUE,
@@ -99,7 +111,7 @@ CREATE TABLE IF NOT EXISTS parcel_deliveries (
     FOREIGN KEY (parcel_size_id) REFERENCES parcel_sizes(id)
 );
 
--- Parcel payments table (added to existing schema)
+-- Parcel payments table
 CREATE TABLE IF NOT EXISTS parcel_payments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     delivery_id INT NOT NULL,
@@ -111,7 +123,7 @@ CREATE TABLE IF NOT EXISTS parcel_payments (
     FOREIGN KEY (delivery_id) REFERENCES parcel_deliveries(id)
 );
 
--- Insert parcel sizes (run once)
+-- Insert parcel sizes
 INSERT IGNORE INTO parcel_sizes (name, description, base_price) VALUES
 ('Small', 'Small (up to 1 kg)', 200),
 ('Medium', 'Medium (1-3 kg)', 350),

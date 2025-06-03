@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const BusBookingForm = ({ cities }) => {
@@ -20,6 +20,9 @@ const BusBookingForm = ({ cities }) => {
     name: '',
     phone: ''
   });
+    const [isLoading, setIsLoading] = useState(false);
+    const [checkoutId, setCheckoutId] = useState(null);
+    const [error, setError] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [bookingStatus, setBookingStatus] = useState('search'); // search | select | details | payment | complete
 
@@ -95,9 +98,99 @@ const BusBookingForm = ({ cities }) => {
 
   // Handle payment submission
   const handlePayment = async () => {
-     const formattedPhone = formatPhoneNumber(passengerDetails.phone);
+     const phone = formatPhoneNumber(passengerDetails.phone);
     try {
-      const response = await fetch('http://localhost:5000/api/bookings', {
+
+      // console.log(selectedBus.price)
+
+       const payment = await fetch('http://localhost:5000/api/initiate-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone:phone, amount:Number(selectedBus.price)})
+      })
+     const data = await payment.json();
+    //  console.log('here is the data',data?.CheckoutRequestID)
+    //  const data = {CheckoutRequestID:'abhffd'}
+      setCheckoutId(data?.CheckoutRequestID)
+
+
+      // const response = await fetch('http://localhost:5000/api/bookings', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     busId: selectedBus.id,
+      //     paymentMethod,
+      //     seatNumbers: selectedSeats,
+      //     customerPhone: formattedPhone,
+      //     customerName: passengerDetails.name,
+      //     travelDate: searchParams.date,
+      //   }),
+      // });
+
+      // if (!response.ok) {
+      //   const errorData = await response.json();
+      //   throw new Error(`Payment failed: ${errorData?.message || response.statusText}`);
+      // }
+
+      // const result = await response.json();
+//             const bookingDetails = {
+//   seatNumbers: selectedSeats,
+//   customerPhone: formattedPhone,
+//   customerName: passengerDetails.name,
+//   travelDate: searchParams.date,
+//   amount:result.totalAmount,
+//   bus:selectedBus,
+// };
+      
+      // setBookingStatus('complete');
+      // navigate('/print-ticket', { state: bookingDetails });
+    } catch (error) {
+      console.error("Payment error:", error);
+    }
+  };
+
+  // Reset form
+  const resetForm = () => {
+    setSearchParams({ from: '', to: '', date: today });
+    setBusData(null);
+    setSelectedBus(null);
+    setSelectedSeats([]);
+    setPassengerDetails({ name: '', phone: '' });
+    setPaymentMethod('');
+    setBookingStatus('search');
+     setCheckoutId(null)
+  };
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSearchParams(prev => ({ ...prev, [name]: value }));
+  };
+
+
+
+   useEffect(() => {
+    
+  if (!checkoutId) return;
+
+  const pollInterval = setInterval(async () => {
+    const formattedPhone = formatPhoneNumber(passengerDetails.phone)
+    try {
+      const response = await fetch(`http://localhost:5000/api/payment-status/${checkoutId}`);
+      const data = await response.json();
+      console.log('Polling response:', data);
+      // const data = {result_code:0}
+
+
+      // Only stop polling when we have a conclusive result
+      if (data?.result_code !== undefined) {  // Check for existence of result_code
+        clearInterval(pollInterval);
+        setIsLoading(false);
+        // setPaymentStatus(data);
+        
+        if (data.result_code === '0') {
+          console.log('Payment succeeded!', data);
+            const response = await fetch('http://localhost:5000/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -127,27 +220,29 @@ const BusBookingForm = ({ cities }) => {
       
       setBookingStatus('complete');
       navigate('/print-ticket', { state: bookingDetails });
-    } catch (error) {
-      console.error("Payment error:", error);
+        } else {
+          console.log('Payment failed:', data.result_desc);
+        }
+      }
+      // Else: Continue polling (status still pending)
+    } catch (err) {
+      console.error('Polling error:', err);
+      // Don't clear interval - keep trying despite temporary errors
     }
-  };
+  }, 3000); // Poll every 3 seconds
 
-  // Reset form
-  const resetForm = () => {
-    setSearchParams({ from: '', to: '', date: today });
-    setBusData(null);
-    setSelectedBus(null);
-    setSelectedSeats([]);
-    setPassengerDetails({ name: '', phone: '' });
-    setPaymentMethod('');
-    setBookingStatus('search');
-  };
+  // Add timeout (e.g., 10 minutes)
+  const timeout = setTimeout(() => {
+    clearInterval(pollInterval);
+    setIsLoading(false);
+    setError('Payment confirmation timeout');
+  }, 600000);
 
-  // Handle input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setSearchParams(prev => ({ ...prev, [name]: value }));
+  return () => {
+    clearInterval(pollInterval);
+    clearTimeout(timeout);
   };
+}, [checkoutId]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4" style={{ backgroundColor: '#FFFFC5' }}>

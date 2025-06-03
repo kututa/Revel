@@ -15,7 +15,7 @@ app.use(express.json());
 const port = process.env.PORT
 
 
- checkDatabase()
+ await checkDatabase()
   app.use('/api',initRoutes)
   app.use('/api',bookingRoutes)
   app.use('/api',parcelRoutes)
